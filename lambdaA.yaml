@@ -1,0 +1,40 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: lambdaA
+
+# More info about Globals: https://github.com/awslabs/serverless-application-model/blob/master/docs/globals.rst
+Globals:
+  Function:
+    Timeout: 3
+
+Parameters:
+  LAMBDAB_ENDPOINT:
+    Type: String
+    Default: "http://172.17.0.1:3001"
+
+Resources:
+  DependenciesLayer:
+    Type: AWS::Serverless::LayerVersion
+    Properties:
+      ContentUri: dependencies/.
+      CompatibleRuntimes:
+        - nodejs12.x
+
+  LambdaA:
+    Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+    Properties:
+      Timeout: 10
+      Handler: lambdaA.handler
+      Runtime: nodejs12.x
+      Layers:
+        - !Ref DependenciesLayer
+      Environment:
+        Variables:
+          LAMBDAB_ENDPOINT: !Ref LAMBDAB_ENDPOINT
+      Events:
+        ChallengePresets:
+          Type: HttpApi
+          Properties:
+            Path: /test
+            Method: GET
+

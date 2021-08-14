@@ -1,0 +1,8 @@
+{
+    "name": "local-l2l-invocation",
+    "version": "1.0.0",
+    "private": true,
+    "dependencies": {
+        "aws-sdk": "2.968.0"
+    }
+  }
